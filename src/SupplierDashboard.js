@@ -14,6 +14,9 @@ const AnalyticsIcon = () => <svg className="w-6 h-6 mr-3" fill="none" stroke="cu
 const RefreshIcon = () => <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M20 4s-1.5-2-4-2-4 2-4 2M4 20s1.5 2 4 2 4-2 4-2" /></svg>;
 const MenuIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>;
 
+// --- IMPORTANT: Use your computer's Network IP Address here, not localhost ---
+const API_BASE_URL = 'https://rendor-saathi-backend.onrender.com/api'; // Replace with your actual IP
+
 // --- Reusable Dashboard Components ---
 const StatCard = ({ title, value, icon, color }) => (
     <div className="bg-white p-6 rounded-2xl shadow-lg flex items-center">
@@ -27,10 +30,10 @@ const StatCard = ({ title, value, icon, color }) => (
 
 // --- Functional Feature Panes ---
 const DashboardPane = ({ orders }) => {
-    const newOrdersCount = orders.filter(o => o.status === 'New').length;
-    const readyOrdersCount = orders.filter(o => o.status === 'Ready for Pickup').length;
-    const weeklySales = orders.reduce((sum, order) => sum + order.totalAmount, 0);
-    const recentOrders = orders.slice(0, 5);
+    const newOrdersCount = (orders || []).filter(o => o.status === 'New').length;
+    const readyOrdersCount = (orders || []).filter(o => o.status === 'Ready for Pickup').length;
+    const weeklySales = (orders || []).reduce((sum, order) => sum + order.totalAmount, 0);
+    const recentOrders = (orders || []).slice(0, 5);
 
     return (
         <div>
@@ -66,11 +69,9 @@ const DashboardPane = ({ orders }) => {
 };
 
 const OrdersPane = ({ orders, setOrders, refreshOrders, isLoading }) => {
-    const API_URL = 'https://rendor-saathi-backend.onrender.com/api';
-
     const handleUpdateStatus = async (orderId, status) => {
         try {
-            const response = await fetch(`${API_URL}/orders/${orderId}/status`, {
+            const response = await fetch(`${API_BASE_URL}/orders/${orderId}/status`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status }),
@@ -96,7 +97,7 @@ const OrdersPane = ({ orders, setOrders, refreshOrders, isLoading }) => {
         </div>
     );
 
-    const ordersByStatus = (status) => orders.filter(o => o.status === status);
+    const ordersByStatus = (status) => (orders || []).filter(o => o.status === status);
 
     return (
         <div>
@@ -124,7 +125,6 @@ const OrdersPane = ({ orders, setOrders, refreshOrders, isLoading }) => {
 const InventoryPane = ({ products, setProducts, supplierId }) => {
     const [newItem, setNewItem] = useState({ name: '', price: '', unit: 'kg' });
     const [error, setError] = useState('');
-    const API_URL = 'http://192.168.1.10:5000/api';
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -136,7 +136,7 @@ const InventoryPane = ({ products, setProducts, supplierId }) => {
         setError('');
         const productData = { ...newItem, supplierId, price: parseFloat(newItem.price) };
         try {
-            const response = await fetch(`${API_URL}/products`, {
+            const response = await fetch(`${API_BASE_URL}/products`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(productData),
@@ -177,7 +177,7 @@ const InventoryPane = ({ products, setProducts, supplierId }) => {
                 <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-lg">
                      <h3 className="text-xl font-bold text-[#44332d] mb-4">Your Products</h3>
                      <div className="space-y-2">
-                        {products.map(p => (
+                        {(products || []).map(p => (
                             <div key={p._id} className="flex justify-between items-center p-2 border-b">
                                 <span>{p.name}</span>
                                 <span>₹{p.price} / {p.unit}</span>
@@ -193,7 +193,6 @@ const InventoryPane = ({ products, setProducts, supplierId }) => {
 const ProfilePane = ({ user, setUser }) => {
     const [formData, setFormData] = useState(user);
     const [message, setMessage] = useState('');
-    const API_URL = 'http://192.168.1.10:5000/api';
 
     const handleChange = (e) => {
         setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -202,7 +201,7 @@ const ProfilePane = ({ user, setUser }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`${API_URL}/profile/${user.id}`, {
+            const response = await fetch(`${API_BASE_URL}/profile/${user._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
@@ -237,10 +236,9 @@ const AnalyticsPane = ({ orders, products, user, setUser }) => {
     const [salesData, setSalesData] = useState([]);
     const [featured, setFeatured] = useState(user.featuredProductIds || []);
     const [message, setMessage] = useState('');
-    const API_URL = 'http://192.168.1.10:5000/api';
 
     useEffect(() => {
-        const productCounts = orders.flatMap(o => o.items).reduce((acc, item) => {
+        const productCounts = (orders || []).flatMap(o => o.items).reduce((acc, item) => {
             acc[item.name] = (acc[item.name] || 0) + item.quantity;
             return acc;
         }, {});
@@ -250,7 +248,7 @@ const AnalyticsPane = ({ orders, products, user, setUser }) => {
             .map(([name, quantity]) => ({ name, quantity }));
         setTopProducts(sortedProducts);
 
-        const salesByDay = orders.reduce((acc, order) => {
+        const salesByDay = (orders || []).reduce((acc, order) => {
             const date = new Date(order.createdAt).toLocaleDateString();
             acc[date] = (acc[date] || 0) + order.totalAmount;
             return acc;
@@ -274,7 +272,7 @@ const AnalyticsPane = ({ orders, products, user, setUser }) => {
 
     const handleSaveChanges = async () => {
         try {
-            const response = await fetch(`${API_URL}/profile/${user.id}`, {
+            const response = await fetch(`${API_BASE_URL}/profile/${user._id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ featuredProductIds: featured }),
@@ -320,7 +318,7 @@ const AnalyticsPane = ({ orders, products, user, setUser }) => {
                 <div className="bg-white p-6 rounded-2xl shadow-lg">
                     <h3 className="text-xl font-bold text-[#44332d] mb-4">Manage Featured Products (Max 3)</h3>
                     <div className="space-y-2">
-                        {products.map(p => (
+                        {(products || []).map(p => (
                             <label key={p._id} className="flex items-center space-x-3">
                                 <input type="checkbox"
                                     checked={featured.includes(p._id)}
@@ -354,15 +352,20 @@ export default function SupplierDashboard({ user, onLogout }) {
         setIsLoading(true);
         try {
             const [ordersRes, productsRes] = await Promise.all([
-                fetch(`http://192.168.1.10:5000/api/orders/supplier/${user.id}`),
-                fetch(`http://192.168.1.10:5000/api/products/supplier/${user.id}`)
+                fetch(`${API_BASE_URL}/orders/supplier/${user._id}`),
+                fetch(`${API_BASE_URL}/products/supplier/${user._id}`)
             ]);
-            const ordersData = await ordersRes.json();
-            const productsData = await productsRes.json();
-            setOrders(ordersData);
-            setProducts(productsData);
+            
+            // --- FIXED: Check if responses are ok before parsing JSON ---
+            const ordersData = ordersRes.ok ? await ordersRes.json() : [];
+            const productsData = productsRes.ok ? await productsRes.json() : [];
+
+            setOrders(Array.isArray(ordersData) ? ordersData : []);
+            setProducts(Array.isArray(productsData) ? productsData : []);
         } catch (error) {
             console.error("Failed to fetch dashboard data", error);
+            setOrders([]); // Set to empty array on error to prevent crash
+            setProducts([]);
         } finally {
             setIsLoading(false);
         }
@@ -370,14 +373,14 @@ export default function SupplierDashboard({ user, onLogout }) {
 
     useEffect(() => {
         fetchData();
-    }, [user.id]);
+    }, [user._id]);
 
 
     const renderView = () => {
         switch (activeView) {
             case 'dashboard': return <DashboardPane orders={orders} />;
             case 'orders': return <OrdersPane orders={orders} setOrders={setOrders} refreshOrders={fetchData} isLoading={isLoading} />;
-            case 'inventory': return <InventoryPane products={products} setProducts={setProducts} supplierId={user.id} />;
+            case 'inventory': return <InventoryPane products={products} setProducts={setProducts} supplierId={user._id} />;
             case 'profile': return <ProfilePane user={currentUser} setUser={setCurrentUser} />;
             case 'analytics': return <AnalyticsPane orders={orders} products={products} user={currentUser} setUser={setCurrentUser} />;
             default: return <DashboardPane orders={orders} />;
