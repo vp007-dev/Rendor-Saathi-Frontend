@@ -1,10 +1,6 @@
 import React, { useState, useEffect } from 'react';
-// For charts, you would need a library like Recharts.
-// To install: npm install recharts
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-
-// --- Helper SVG Icons ---
 const LogoutIcon = () => <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>;
 const DashboardIcon = () => <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>;
 const OrdersIcon = () => <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" /></svg>;
@@ -14,10 +10,8 @@ const AnalyticsIcon = () => <svg className="w-6 h-6 mr-3" fill="none" stroke="cu
 const RefreshIcon = () => <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h5M20 20v-5h-5M20 4s-1.5-2-4-2-4 2-4 2M4 20s1.5 2 4 2 4-2 4-2" /></svg>;
 const MenuIcon = () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>;
 
-// --- IMPORTANT: Use your computer's Network IP Address here, not localhost ---
-const API_BASE_URL = 'https://rendor-saathi-backend.onrender.com/api'; // Replace with your actual IP
+const API_BASE_URL = 'https://rendor-saathi-backend.onrender.com/api';
 
-// --- Reusable Dashboard Components ---
 const StatCard = ({ title, value, icon, color }) => (
     <div className="bg-white p-6 rounded-2xl shadow-lg flex items-center">
         <div className={`text-3xl p-3 rounded-full mr-4 ${color}`}>{icon}</div>
@@ -28,7 +22,6 @@ const StatCard = ({ title, value, icon, color }) => (
     </div>
 );
 
-// --- Functional Feature Panes ---
 const DashboardPane = ({ orders }) => {
     const newOrdersCount = (orders || []).filter(o => o.status === 'New').length;
     const readyOrdersCount = (orders || []).filter(o => o.status === 'Ready for Pickup').length;
@@ -339,7 +332,6 @@ const AnalyticsPane = ({ orders, products, user, setUser }) => {
 };
 
 
-// --- Main Supplier Dashboard Component ---
 export default function SupplierDashboard({ user, onLogout }) {
     const [activeView, setActiveView] = useState('dashboard');
     const [orders, setOrders] = useState([]);
@@ -356,7 +348,6 @@ export default function SupplierDashboard({ user, onLogout }) {
                 fetch(`${API_BASE_URL}/products/supplier/${user._id}`)
             ]);
             
-            // --- FIXED: Check if responses are ok before parsing JSON ---
             const ordersData = ordersRes.ok ? await ordersRes.json() : [];
             const productsData = productsRes.ok ? await productsRes.json() : [];
 
@@ -364,7 +355,7 @@ export default function SupplierDashboard({ user, onLogout }) {
             setProducts(Array.isArray(productsData) ? productsData : []);
         } catch (error) {
             console.error("Failed to fetch dashboard data", error);
-            setOrders([]); // Set to empty array on error to prevent crash
+            setOrders([]);
             setProducts([]);
         } finally {
             setIsLoading(false);
