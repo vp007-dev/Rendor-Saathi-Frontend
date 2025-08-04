@@ -1,70 +1,119 @@
-# Getting Started with Create React App
+# Vendor Saathi - Your Digital Partner
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Vendor Saathi is a full-stack web application designed as a complete digital support system for street food vendors and their suppliers. It aims to digitize daily operations, provide financial clarity, and build a stronger community, helping micro-entrepreneurs save time, money, and energy.
 
-## Available Scripts
+This project was built for the TuteDude Web Dev Hackathon.
 
-In the project directory, you can run:
+## ✨ Features
 
-### `npm start`
+### For Vendors:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+* **OTP-based Login/Registration:** Secure and accessible authentication using mobile numbers.
+* **Smart Dashboard:** An at-a-glance view of the business with key stats.
+* **AI Demand Forecast:** Live weather-based predictions to help vendors manage stock and reduce waste.
+* **Profit Calculator:** Easily track daily sales and expenses to calculate net profit.
+* **Raw Material Marketplace:** Find local, verified suppliers by area and category.
+* **Supplier Detail Pages:** View supplier inventory, place orders, and read/write reviews.
+* **Leftover Marketplace:** A vendor-to-vendor marketplace to sell extra raw materials at the end of the day.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### For Suppliers:
 
-### `npm test`
+* **Email/Password Login/Registration:** Secure account management for businesses.
+* **Functional Supplier Portal:** A complete dashboard to manage the business.
+* **Order Management:** A Trello-style board to track incoming orders from "New" to "Completed".
+* **Inventory Management:** Easily add new products with prices and units.
+* **Editable Business Profile:** Update business details, address, and supply categories.
+* **Analytics Dashboard:** View sales charts, top-selling products, and manage featured items.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ Tech Stack
 
-### `npm run build`
+* **Frontend:** React.js, Tailwind CSS, Recharts
+* **Backend:** Node.js, Express.js
+* **Database:** MongoDB (with Mongoose)
+* **Authentication:** JWT (JSON Web Tokens), bcrypt.js
+* **APIs:** OpenWeatherMap API
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 🚀 Getting Started
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To get a local copy up and running, follow these simple steps.
 
-### `npm run eject`
+### Prerequisites
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Make sure you have the following installed on your machine:
+* Node.js (which includes npm): [https://nodejs.org/](https://nodejs.org/)
+* Git: [https://git-scm.com/](https://git-scm.com/)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Setup Instructions
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+1.  **Create a Main Project Folder:**
+    First, create a main folder on your computer to hold both the frontend and backend projects.
+    ```sh
+    mkdir VendorSaathiProject
+    cd VendorSaathiProject
+    ```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+2.  **Clone the Backend Repository:**
+    ```sh
+    git clone https://github.com/vp007-dev/Rendor-Saathi-Backend
+    ```
 
-## Learn More
+3.  **Clone the Frontend Repository:**
+    ```sh
+    git clone https://github.com/vp007-dev/Rendor-Saathi-Frontend
+    ```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+4.  **Install Backend Dependencies:**
+    Navigate into the backend folder and install the required npm packages.
+    ```sh
+    cd your-backend-repo-name
+    npm install
+    ```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+5.  **Install Frontend Dependencies:**
+    Navigate into the frontend folder and install its packages.
+    ```sh
+    cd ../your-frontend-repo-name
+    npm install
+    ```
 
-### Code Splitting
+### Environment Variables
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+The backend requires a few secret keys to run.
 
-### Analyzing the Bundle Size
+1.  In your **backend folder**, create a new file named `.env`.
+2.  Open the `.env` file and add the following variables, replacing the placeholder values with your actual keys:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+    ```
+    # Your MongoDB connection string from Atlas
+    MONGO_URI=mongodb+srv://user:password@cluster.mongodb.net/yourDatabaseName
+    
+    # A long, random string for signing tokens
+    JWT_SECRET=your_super_secret_key_for_jwt
+    
+    # Your free API key from OpenWeatherMap
+    OPENWEATHER_API_KEY=your_openweathermap_api_key
+    ```
 
-### Making a Progressive Web App
+### Running the Application
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+You will need to have two terminals open to run both the frontend and backend servers simultaneously.
 
-### Advanced Configuration
+1.  **Run the Backend (Server):**
+    Open a terminal, navigate to your **backend folder**, and run:
+    ```sh
+    # Make sure you are inside the backend folder
+    node server.js
+    ```
+    The backend API will be running at `http://localhost:5000`.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+2.  **Run the Frontend (React App):**
+    Open a **second** terminal, navigate to your **frontend folder**, and run:
+    ```sh
+    # Make sure you are inside the frontend folder
+    npm start
+    ```
+    The frontend will be available at `http://localhost:3000`.
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Your application is now fully running locally!
